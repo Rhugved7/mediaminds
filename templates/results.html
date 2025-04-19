@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"><i class="fa-solid fa-chart-line"></i> Media Minds</a>
+        </div>
+    </nav>
+
+    <div class="container my-5 results-container">
+        <h2 class="results-header"><i class="fa-solid fa-chart-pie"></i> Analysis Results</h2>
+
+        <!-- Sentiment Analysis Summary -->
+        <div class="result-card">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-primary text-white me-3">
+                    <i class="fa-solid fa-face-smile"></i>
+                </div>
+                <h4 class="mb-0">Sentiment Breakdown</h4>
+            </div>
+            <ul class="list-group">
+                {% for sentiment, count in sentiment_counts.items() %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>{{ sentiment }}</strong> 
+                        <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Word Cloud -->
+        {% if wordcloud_path %}
+        <div class="result-card wordcloud-container">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-success text-white me-3">
+                    <i class="fa-solid fa-cloud"></i>
+                </div>
+                <h4 class="mb-0">Word Cloud</h4>
+            </div>
+            <p>This visualization shows the most frequently used words in your analysis, with size indicating frequency.</p>
+            <img src="{{ wordcloud_path }}" alt="Word Cloud" class="img-fluid rounded shadow">
+        </div>
+        {% endif %}
+
+        <!-- Sentiment Chart -->
+        {% if sentiment_chart_path %}
+        <div class="result-card text-center">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-info text-white me-3">
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+                <h4 class="mb-0">Sentiment Chart</h4>
+            </div>
+            <p>This graph shows the distribution of tweet sentiments – helping understand the general tone (positive, negative, neutral).</p>
+            <img src="{{ sentiment_chart_path }}" alt="Sentiment Chart" class="img-fluid rounded shadow">
+        </div>
+        {% endif %}
+
+        <!-- Hashtag Chart -->
+        {% if hashtag_chart_path %}
+        <div class="result-card text-center">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-primary text-white me-3">
+                    <i class="fa-solid fa-hashtag"></i>
+                </div>
+                <h4 class="mb-0">Top Hashtags</h4>
+            </div>
+            <p>This bar graph highlights the most frequent hashtags, showing the most popular topics or themes.</p>
+            <img src="{{ hashtag_chart_path }}" alt="Hashtag Chart" class="img-fluid rounded shadow">
+        </div>
+        {% endif %}
+
+        <!-- Mention Chart -->
+        {% if mention_chart_path %}
+        <div class="result-card text-center">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-warning text-white me-3">
+                    <i class="fa-solid fa-at"></i>
+                </div>
+                <h4 class="mb-0">Top Mentions</h4>
+            </div>
+            <p>This chart displays the most mentioned users, providing insight into key influencers or active participants in the conversation.</p>
+            <img src="{{ mention_chart_path }}" alt="Mention Chart" class="img-fluid rounded shadow">
+        </div>
+        {% endif %}
+
+        <!-- Tweet Data -->
+        <div class="result-card">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-secondary text-white me-3">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <h4 class="mb-0">Analyzed Tweets</h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tweet</th>
+                            <th>Sentiment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tweet in tweets %}
+                        <tr>
+                            <td>{{ tweet['Tweet'] }}</td>
+                            <td>
+                                {% if tweet['Sentiment'] == "Positive" %}
+                                    <span class="badge bg-success">{{ tweet['Sentiment'] }}</span>
+                                {% elif tweet['Sentiment'] == "Negative" %}
+                                    <span class="badge bg-danger">{{ tweet['Sentiment'] }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ tweet['Sentiment'] }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <a href="/" class="btn btn-dark mt-3"><i class="fa-solid fa-arrow-left"></i> Go Back</a>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">&copy; 2025 Media Minds | All Rights Reserved</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
